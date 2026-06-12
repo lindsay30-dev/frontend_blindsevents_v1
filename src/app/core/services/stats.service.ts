@@ -1,17 +1,19 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { DashboardStats, EventDetailStats } from '../models/stats.model';
+import { environment } from '../../../environments/environment';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class StatsService {
-  // ⚠️ ADAPTEZ CETTE URL à celle de votre backend
-  private apiUrl = 'http://localhost:8000/api/stats'; 
+  private http = inject(HttpClient);
+  private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  getDashboardStats(): Observable<DashboardStats> {
+    return this.http.get<DashboardStats>(`${this.apiUrl}/stats/dashboard/`);
+  }
 
-  getDashboard(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/dashboard/`);
+  getEventStats(eventId: number): Observable<EventDetailStats> {
+    return this.http.get<EventDetailStats>(`${this.apiUrl}/stats/events/${eventId}/`);
   }
 }

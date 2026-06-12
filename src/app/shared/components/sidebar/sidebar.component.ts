@@ -5,19 +5,15 @@ import { AuthService } from '../../../core/services/auth.service';
 import { inject } from '@angular/core';
 
 @Component({
-  selector: 'app-navbar',
+  selector: 'app-sidebar',
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive],
-  templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  templateUrl: './sidebar.component.html',
+  styleUrl: './sidebar.component.css'
 })
-export class NavbarComponent {
+export class SidebarComponent {
   private authService = inject(AuthService);
-  isMenuOpen = false;
-
-  get isAuthenticated() {
-    return this.authService.isAuthenticated;
-  }
+  isCollapsed = false;
 
   get currentUser() {
     return this.authService.currentUser;
@@ -27,12 +23,11 @@ export class NavbarComponent {
     return this.authService.isOrganizer;
   }
 
-  toggleMenu() {
-    this.isMenuOpen = !this.isMenuOpen;
+  toggleSidebar() {
+    this.isCollapsed = !this.isCollapsed;
   }
 
   logout() {
     this.authService.logout();
-    this.isMenuOpen = false;
   }
 }

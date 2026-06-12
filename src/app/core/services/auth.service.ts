@@ -1,78 +1,137 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { NotificationService } from './notification.service';
-import { User } from '../models/user.model';
-import { tap, catchError, of } from 'rxjs';
+import { Observable, tap, catchError, of, BehaviorSubject } from 'rxjs';
+import { User, RegisterData, LoginData, AuthResponse } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private notify = inject(NotificationService);
-  private apiUrl = 'http://localhost:3000/api/auth';
-
-  currentUser = signal<User | null>(null);
+  private apiUrl = 'https://blindsevent-api.onrender.com/api/auth';
+  
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  currentUser$ = this.currentUserSubject.asObservable();
+  
+  private accessTokenSubject = new BehaviorSubject<string | null>(null);
+  accessToken$ = this.accessTokenSubject.asObservable();
 
   constructor() {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.fetchMe().subscribe();
+    this.loadFromStorage();
+  }
+
+  private loadFromStorage() {
+    const access = localStorage.getItem('access_token');
+    const refresh = localStorage.getItem('refresh_token');
+    const userStr = localStorage.getItem('current_user');
+    
+    if (access) {
+      this.accessTokenSubject.next(access);
+    }
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        this.currentUserSubject.next(user);
+      } catch (e) {
+        console.error('Error parsing user from storage', e);
+      }
     }
   }
 
-  private fetchMe() {
-    return this.http.get<User>('http://localhost:3000/api/users/me', {
-      headers: { 'x-auth-token': localStorage.getItem('token') || '' }
-    }).pipe(
-      tap(user => this.currentUser.set(user)),
+  register(data: RegisterData): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register/`, data).pipe(
+      tap(response => {
+        this.handleAuthSuccess(response);
+      })
+    );
+  }
+
+  login(data: LoginData): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login/`, data).pipe(
+      tap(response => {
+        this.handleAuthSuccess(response);
+      })
+    );
+  }
+
+  logout(): Observable<any> {
+    const refreshToken = localStorage.getItem('refresh_token');
+    return this.http.post(`${this.apiUrl}/logout/`, { refresh: refreshToken }).pipe(
+      tap(() => {
+        this.clearAuth();
+        this.router.navigate(['/login']);
+      }),
       catchError(() => {
-        localStorage.removeItem('token');
+        this.clearAuth();
+        this.router.navigate(['/login']);
         return of(null);
       })
     );
   }
 
-  register(userData: any, password: string) {
-    return this.http.post<{ token: string; user: User }>(`${this.apiUrl}/register`, { ...userData, password })
-      .pipe(
-        tap(res => {
-          localStorage.setItem('token', res.token);
-          this.currentUser.set(res.user);
-          this.notify.success('Inscription réussie');
-          this.router.navigate(['/dashboard']);
-        })
-      );
+  refreshToken(): Observable<AuthResponse> {
+    const refreshToken = localStorage.getItem('refresh_token');
+    return this.http.post<AuthResponse>(`${this.apiUrl}/refresh/`, { refresh: refreshToken }).pipe(
+      tap(response => {
+        localStorage.setItem('access_token', response.access);
+        this.accessTokenSubject.next(response.access);
+      }),
+      catchError(() => {
+        this.clearAuth();
+        this.router.navigate(['/login']);
+        return of(null as any);
+      })
+    );
   }
 
-  login(email: string, password: string) {
-    return this.http.post<{ token: string; user: User }>(`${this.apiUrl}/login`, { email, password })
-      .pipe(
-        tap(res => {
-          localStorage.setItem('token', res.token);
-          this.currentUser.set(res.user);
-          this.notify.success('Connexion réussie');
-          this.router.navigate(['/dashboard']);
-        })
-      );
+  getProfile(): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/profile/`).pipe(
+      tap(user => {
+        this.currentUserSubject.next(user);
+        localStorage.setItem('current_user', JSON.stringify(user));
+      })
+    );
   }
 
-  logout() {
-    localStorage.removeItem('token');
-    this.currentUser.set(null);
-    this.router.navigate(['/login']);
-    this.notify.info('Déconnecté');
+  updateProfile(data: Partial<User>): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/profile/`, data).pipe(
+      tap(user => {
+        this.currentUserSubject.next(user);
+        localStorage.setItem('current_user', JSON.stringify(user));
+      })
+    );
   }
 
-  updateProfile(updates: Partial<User>, avatarFile?: File) {
-    const formData = new FormData();
-    Object.keys(updates).forEach(key => {
-      if (updates[key as keyof User] !== undefined)
-        formData.append(key, updates[key as keyof User] as string);
-    });
-    if (avatarFile) formData.append('avatar', avatarFile);
-    return this.http.put<User>('http://localhost:3000/api/users/me', formData, {
-      headers: { 'x-auth-token': localStorage.getItem('token') || '' }
-    }).pipe(tap(user => this.currentUser.set(user)));
+  private handleAuthSuccess(response: AuthResponse) {
+    localStorage.setItem('access_token', response.access);
+    localStorage.setItem('refresh_token', response.refresh);
+    localStorage.setItem('current_user', JSON.stringify(response.user));
+    
+    this.accessTokenSubject.next(response.access);
+    this.currentUserSubject.next(response.user);
+  }
+
+  private clearAuth() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('current_user');
+    this.accessTokenSubject.next(null);
+    this.currentUserSubject.next(null);
+  }
+
+  get currentUser(): User | null {
+    return this.currentUserSubject.value;
+  }
+
+  get accessToken(): string | null {
+    return this.accessTokenSubject.value;
+  }
+
+  get isAuthenticated(): boolean {
+    return !!this.accessToken;
+  }
+
+  get isOrganizer(): boolean {
+    return this.currentUser?.profile?.role === 'organizer';
   }
 }

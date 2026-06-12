@@ -1,15 +1,25 @@
-export interface Ticket {
-  id: string;
-  userId: string;
-  eventId: string;
-  eventTitle?: string;
-  eventDate?: string;
-  eventLocation?: string;
-  ticketType: string;
+/**
+ * Modèles de types de billets basés sur l'API Django
+ */
+export interface TicketType {
+  id: number;
+  event: number;
+  name: string;
+  price: number;
   quantity: number;
-  totalPrice: number;
-  purchaseDate: string;
-  reference: string;
-  status: 'valid' | 'used' | 'cancelled';
-  qrData: string;
+  remaining: number;
+  sale_start?: string;
+  sale_end?: string;
+}
+
+export interface TicketTypeCreate {
+  event: number;
+  name: string;
+  price: number;
+  quantity: number;
+  sale_start?: string;
+  sale_end?: string;
+}
+
+export interface TicketTypeUpdate extends Partial<TicketTypeCreate> {
 }

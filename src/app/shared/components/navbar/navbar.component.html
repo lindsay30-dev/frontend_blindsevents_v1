@@ -1,21 +1,107 @@
 <nav class="navbar">
-  <div class="container nav-container">
-    <a routerLink="/" class="logo">BIG SHOT EVENTS</a>
-    <div class="nav-links">
-      <a routerLink="/home" routerLinkActive="active">Événements</a>
-      <a routerLink="/category/gala" routerLinkActive="active">Gala</a>
-      <a routerLink="/category/culture" routerLinkActive="active">Culture</a>
-      <a routerLink="/contact" routerLinkActive="active">Contact</a>
-      @if (auth.currentUser()) {
-        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-        <a routerLink="/wallet" routerLinkActive="active">Mes billets</a>
-        <button class="btn-logout" (click)="auth.logout()">Déconnexion</button>
-      } @else {
-        <a routerLink="/login" class="btn-reserver">RÉSERVER</a>
-      }
-      <button class="theme-toggle" (click)="theme.toggle()">
-        {{ theme.isDark() ? '☀️' : '🌙' }}
-      </button>
+  <div class="navbar-container">
+    <div class="navbar-brand">
+      <a routerLink="/" class="brand-link">
+        <div class="brand-logo">
+          <i class="ri-calendar-event-fill"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">BlindEvents</span>
+          <span class="brand-tagline">Live the Experience</span>
+        </div>
+      </a>
+    </div>
+
+    <button class="mobile-toggle" (click)="toggleMenu()">
+      <i class="ri-menu-4-line" *ngIf="!isMenuOpen"></i>
+      <i class="ri-close-line" *ngIf="isMenuOpen"></i>
+    </button>
+
+    <div class="navbar-menu" [class.menu-open]="isMenuOpen">
+      <ul class="nav-links">
+        <li class="nav-item">
+          <a routerLink="/" routerLinkActive="active" class="nav-link">
+            <i class="ri-home-4-line"></i>
+            <span>Accueil</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/events" routerLinkActive="active" class="nav-link">
+            <i class="ri-calendar-event-line"></i>
+            <span>Événements</span>
+          </a>
+        </li>
+
+        <ng-container *ngIf="isAuthenticated">
+          <li class="nav-item">
+            <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
+              <i class="ri-dashboard-line"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item" *ngIf="isOrganizer">
+            <a routerLink="/event/create" routerLinkActive="active" class="nav-link">
+              <i class="ri-add-circle-line"></i>
+              <span>Créer</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/wallet" routerLinkActive="active" class="nav-link">
+              <i class="ri-wallet-3-line"></i>
+              <span>Portefeuille</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/profile" routerLinkActive="active" class="nav-link">
+              <i class="ri-user-line"></i>
+              <span>Profil</span>
+            </a>
+          </li>
+        </ng-container>
+      </ul>
+
+      <div class="nav-actions">
+        <ng-container *ngIf="!isAuthenticated">
+          <a routerLink="/login" class="btn btn-ghost">
+            Connexion
+          </a>
+          <a routerLink="/register" class="btn btn-primary">
+            S'inscrire
+            <i class="ri-arrow-right-line"></i>
+          </a>
+        </ng-container>
+
+        <ng-container *ngIf="isAuthenticated">
+          <div class="user-dropdown">
+            <button class="user-btn">
+              <div class="user-avatar">
+                <i class="ri-user-line"></i>
+              </div>
+              <div class="user-details">
+                <span class="user-name">{{ currentUser?.username }}</span>
+                <span class="user-role" *ngIf="isOrganizer">Organisateur</span>
+                <span class="user-role" *ngIf="!isOrganizer">Participant</span>
+              </div>
+              <i class="ri-arrow-down-s-line"></i>
+            </button>
+            <div class="dropdown-menu">
+              <a routerLink="/profile" class="dropdown-item">
+                <i class="ri-user-line"></i>
+                Mon profil
+              </a>
+              <a routerLink="/settings" class="dropdown-item">
+                <i class="ri-settings-3-line"></i>
+                Paramètres
+              </a>
+              <div class="dropdown-divider"></div>
+              <button (click)="logout()" class="dropdown-item dropdown-item-danger">
+                <i class="ri-logout-box-line"></i>
+                Déconnexion
+              </button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
     </div>
   </div>
 </nav>

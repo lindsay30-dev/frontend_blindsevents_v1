@@ -1,0 +1,128 @@
+<aside class="sidebar" [class.collapsed]="isCollapsed">
+  <div class="sidebar-header">
+    <div class="sidebar-brand">
+      <div class="brand-logo">
+        <i class="ri-calendar-event-fill"></i>
+      </div>
+      <div class="brand-info" *ngIf="!isCollapsed">
+        <span class="brand-name">BlindEvents</span>
+        <span class="brand-tagline">Dashboard</span>
+      </div>
+    </div>
+    <button class="sidebar-toggle" (click)="toggleSidebar()">
+      <i class="ri-menu-fold-line" *ngIf="!isCollapsed"></i>
+      <i class="ri-menu-unfold-line" *ngIf="isCollapsed"></i>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section" *ngIf="!isCollapsed">
+      <span class="nav-section-title">Menu Principal</span>
+    </div>
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
+          <div class="nav-icon">
+            <i class="ri-dashboard-line"></i>
+          </div>
+          <span class="nav-text" *ngIf="!isCollapsed">Dashboard</span>
+        </a>
+      </li>
+
+      <li class="nav-item" *ngIf="isOrganizer">
+        <a routerLink="/events" routerLinkActive="active" class="nav-link">
+          <div class="nav-icon">
+            <i class="ri-calendar-line"></i>
+          </div>
+          <span class="nav-text" *ngIf="!isCollapsed">Mes événements</span>
+        </a>
+      </li>
+
+      <li class="nav-item" *ngIf="isOrganizer">
+        <a routerLink="/event/create" routerLinkActive="active" class="nav-link nav-link-primary">
+          <div class="nav-icon">
+            <i class="ri-add-circle-line"></i>
+          </div>
+          <span class="nav-text" *ngIf="!isCollapsed">Créer événement</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-section" *ngIf="!isCollapsed">
+      <span class="nav-section-title">Mon Compte</span>
+    </div>
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a routerLink="/wallet" routerLinkActive="active" class="nav-link">
+          <div class="nav-icon">
+            <i class="ri-wallet-3-line"></i>
+          </div>
+          <span class="nav-text" *ngIf="!isCollapsed">Portefeuille</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a routerLink="/tickets" routerLinkActive="active" class="nav-link">
+          <div class="nav-icon">
+            <i class="ri-ticket-line"></i>
+          </div>
+          <span class="nav-text" *ngIf="!isCollapsed">Mes billets</span>
+        </a>
+      </li>
+
+      <li class="nav-item" *ngIf="isOrganizer">
+        <a routerLink="/scan-ticket" routerLinkActive="active" class="nav-link">
+          <div class="nav-icon">
+            <i class="ri-qr-scan-line"></i>
+          </div>
+          <span class="nav-text" *ngIf="!isCollapsed">Scanner billet</span>
+        </a>
+      </li>
+
+      <li class="nav-item" *ngIf="isOrganizer">
+        <a routerLink="/verify-ticket" routerLinkActive="active" class="nav-link">
+          <div class="nav-icon">
+            <i class="ri-verified-badge-line"></i>
+          </div>
+          <span class="nav-text" *ngIf="!isCollapsed">Vérifier billet</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-section" *ngIf="!isCollapsed">
+      <span class="nav-section-title">Paramètres</span>
+    </div>
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a routerLink="/profile" routerLinkActive="active" class="nav-link">
+          <div class="nav-icon">
+            <i class="ri-user-line"></i>
+          </div>
+          <span class="nav-text" *ngIf="!isCollapsed">Profil</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a (click)="logout()" class="nav-link nav-link-danger">
+          <div class="nav-icon">
+            <i class="ri-logout-box-line"></i>
+          </div>
+          <span class="nav-text" *ngIf="!isCollapsed">Déconnexion</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="sidebar-footer" *ngIf="!isCollapsed">
+    <div class="user-card">
+      <div class="user-avatar">
+        <i class="ri-user-line"></i>
+      </div>
+      <div class="user-details">
+        <span class="user-name">{{ currentUser?.username }}</span>
+        <span class="user-role" *ngIf="isOrganizer">Organisateur</span>
+        <span class="user-role" *ngIf="!isOrganizer">Participant</span>
+      </div>
+    </div>
+  </div>
+</aside>

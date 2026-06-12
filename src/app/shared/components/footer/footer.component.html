@@ -1,32 +1,106 @@
 <footer class="footer">
-  <div class="container footer-grid">
-    <div class="footer-col">
-      <h3>Big Shot Events</h3>
-      <p>L'excellence événementielle au Cameroun. Créateur de moments inoubliables pour l'élite.</p>
-    </div>
-    <div class="footer-col">
-      <h4>Explorer</h4>
-      <a routerLink="/about">À propos</a>
-      <a routerLink="/gala">Gala Prestige</a>
-      <a routerLink="/culture">Culture</a>
-    </div>
-    <div class="footer-col">
-      <h4>Support</h4>
-      <a routerLink="/faq">FAQ</a>
-      <a routerLink="/contact">Contact</a>
-      <a routerLink="/partners">Partenaires</a>
-    </div>
-    <div class="footer-col">
-      <h4>Newsletter</h4>
-      <div class="newsletter">
-        <input type="email" placeholder="Email">
-        <button>OK</button>
+  <div class="footer-container">
+    <div class="footer-main">
+      <div class="footer-brand">
+        <div class="brand-logo">
+          <i class="ri-calendar-event-fill"></i>
+        </div>
+        <div class="brand-info">
+          <h3 class="brand-name">BlindEvents</h3>
+          <p class="brand-tagline">Live the Experience</p>
+        </div>
+        <p class="brand-description">
+          Découvrez et réservez vos événements préférés en toute simplicité.
+          Concerts, conférences, festivals et bien plus encore.
+        </p>
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="Facebook">
+            <i class="ri-facebook-fill"></i>
+          </a>
+          <a href="#" class="social-link" aria-label="Twitter">
+            <i class="ri-twitter-x-fill"></i>
+          </a>
+          <a href="#" class="social-link" aria-label="Instagram">
+            <i class="ri-instagram-fill"></i>
+          </a>
+          <a href="#" class="social-link" aria-label="LinkedIn">
+            <i class="ri-linkedin-fill"></i>
+          </a>
+          <a href="#" class="social-link" aria-label="YouTube">
+            <i class="ri-youtube-fill"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-sections">
+        <div class="footer-section">
+          <h4 class="section-title">Navigation</h4>
+          <ul class="section-links">
+            <li><a routerLink="/" class="section-link">Accueil</a></li>
+            <li><a routerLink="/events" class="section-link">Événements</a></li>
+            <li><a routerLink="/about" class="section-link">À propos</a></li>
+            <li><a routerLink="/contact" class="section-link">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h4 class="section-title">Support</h4>
+          <ul class="section-links">
+            <li><a routerLink="/faq" class="section-link">FAQ</a></li>
+            <li><a routerLink="/help" class="section-link">Centre d'aide</a></li>
+            <li><a routerLink="/terms" class="section-link">Conditions</a></li>
+            <li><a routerLink="/privacy" class="section-link">Confidentialité</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h4 class="section-title">Contact</h4>
+          <ul class="contact-list">
+            <li class="contact-item">
+              <div class="contact-icon">
+                <i class="ri-map-pin-line"></i>
+              </div>
+              <span>Yaoundé, Cameroun</span>
+            </li>
+            <li class="contact-item">
+              <div class="contact-icon">
+                <i class="ri-mail-line"></i>
+              </div>
+              <span>contactblindevents.com</span>
+            </li>
+            <li class="contact-item">
+              <div class="contact-icon">
+                <i class="ri-phone-line"></i>
+              </div>
+              <span>+237 600 000 000</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h4 class="section-title">Newsletter</h4>
+          <p class="newsletter-text">Recevez les dernières actualités événementielles.</p>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Votre email" class="newsletter-input">
+            <button type="submit" class="newsletter-btn">
+              <i class="ri-send-plane-fill"></i>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="footer-bottom">
-    <div class="container">
-      <p>© 2026 Big Shot Events. L'excellence événementielle au Cameroun.</p>
+
+    <div class="footer-bottom">
+      <div class="footer-bottom-content">
+        <p class="copyright">
+          © 2024 BlindEvents. Tous droits réservés.
+        </p>
+        <div class="footer-bottom-links">
+          <a routerLink="/terms" class="bottom-link">Conditions</a>
+          <a routerLink="/privacy" class="bottom-link">Confidentialité</a>
+          <a routerLink="/cookies" class="bottom-link">Cookies</a>
+        </div>
+      </div>
     </div>
   </div>
 </footer>
