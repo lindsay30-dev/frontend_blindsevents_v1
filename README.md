@@ -223,3 +223,4 @@ Ce projet est sous licence MIT.
 - RemixIcons pour les icônes magnifiques
 - L'équipe Django REST Framework pour l'API backend
 "#frontendBlinds"
+"# blindsfrontend" 
